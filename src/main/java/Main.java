@@ -9,12 +9,22 @@ public class Main {
         BPMNReader bpmnReader = new BPMNReader();
         LinkedList<String> tasks = bpmnReader.getTasks("C:\\Users\\Steffen\\Desktop\\bpmn.xml");
 
+        WSDLReader wsdlReader = new WSDLReader();
+        LinkedList<String> serviceMethods = wsdlReader.getServiceMethods("C:\\Users\\Steffen\\Desktop\\wsdl.xml");
+
         printTasks(tasks);
+        printServiceMethods(serviceMethods);
     }
 
     public static void printTasks(LinkedList<String> tasks) {
         for (String task : tasks) {
             System.out.println(task);
+        }
+    }
+
+    public static void printServiceMethods(LinkedList<String> serviceMethods) {
+        for (String method : serviceMethods) {
+            System.out.println(method);
         }
     }
 }
