@@ -12,7 +12,7 @@ import java.util.LinkedList;
  */
 public class WSDLReader {
 
-    public LinkedList<String> getServiceMethods(String filename) {
+    public static LinkedList<String> getServiceMethods(String filename) {
         LinkedList<String> methods = new LinkedList<String>();
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 
@@ -22,7 +22,7 @@ public class WSDLReader {
             Element rootElement = document.getDocumentElement();
 
             NodeList methodNodes = rootElement.getElementsByTagName("wsdl:message");
-            System.out.println("Length " + methodNodes.getLength());
+
             for (int i = 0; i < methodNodes.getLength(); i++) {
                 methods.add(methodNodes.item(i).getAttributes().getNamedItem("name").getNodeValue());
             }

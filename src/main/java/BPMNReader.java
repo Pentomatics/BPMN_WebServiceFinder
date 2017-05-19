@@ -8,13 +8,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.StringTokenizer;
 
 /**
  * Created by Steffen on 19.05.2017.
  */
 public class BPMNReader {
 
-    public LinkedList<String> getTasks(String filename) {
+    public static LinkedList<String> getTasks(String filename) {
         LinkedList<String> tasks = new LinkedList<String>();
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 
@@ -33,5 +34,19 @@ public class BPMNReader {
         }
 
         return tasks;
+    }
+
+    public static LinkedList<String> getKeyWordsFromTasks(LinkedList<String> tasks) {
+        LinkedList<String> keyWordList = new LinkedList<String>();
+
+        for (String task : tasks) {
+            String[] keyWords = task.split("\\s+");
+
+            for (String keyWord : keyWords) {
+                keyWordList.add(keyWord);
+            }
+        }
+
+        return keyWordList;
     }
 }
