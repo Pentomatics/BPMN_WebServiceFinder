@@ -50,4 +50,8 @@ public class BPMNReader {
 
         return keyWordList;
     }
+    
+    public static String[] getKeyWordsFromTask(String task){    	
+    	return task.split("\\s+");
+    }
 }
