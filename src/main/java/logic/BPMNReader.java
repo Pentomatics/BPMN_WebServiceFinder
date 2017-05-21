@@ -1,3 +1,4 @@
+package logic;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -24,7 +25,7 @@ public class BPMNReader {
             Document document = documentBuilder.parse(new File(filename));
             Element rootElement = document.getDocumentElement();
 
-            NodeList taskNodes = rootElement.getElementsByTagName("task");
+            NodeList taskNodes = rootElement.getElementsByTagName("bpmn:task");
 
             for (int i = 0; i < taskNodes.getLength(); i++) {
                 tasks.add(taskNodes.item(i).getAttributes().getNamedItem("name").getNodeValue());

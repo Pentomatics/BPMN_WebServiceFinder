@@ -1,12 +1,15 @@
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
+import ui.mainFrame;
+
 /**
  * Created by Steffen on 19.05.2017.
  */
 public class Main {
 
     public static void main(String [ ] args) {
+    	/*
         String bpmnFilename = "C:\\Users\\Steffen\\Desktop\\bpmn.xml";
         String wsdlFilename = "C:\\Users\\Steffen\\Desktop\\wsdl.xml";
 
@@ -22,6 +25,9 @@ public class Main {
         LinkedList<String> keyWords = BPMNReader.getKeyWordsFromTasks(tasks);
         WebServiceAnalysisResult result = WebServiceAnalyser.analyseWebService(keyWords, wsdlFilename);
         System.out.println("\nHits: " + result.getHits());
+        */
+    	
+    	new mainFrame();
     }
 
     public static void printTasks(LinkedList<String> tasks) {
