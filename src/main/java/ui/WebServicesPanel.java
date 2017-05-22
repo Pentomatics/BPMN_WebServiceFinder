@@ -1,15 +1,22 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.GrayFilter;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -67,6 +74,7 @@ public class WebServicesPanel extends JPanel {
 		tableScrollPane = new JScrollPane(wsdlTable);
 		webServiceResultsTitle = new JLabel("Passende Webdienste");
 		webServiceResults = new JPanel();
+		webServiceResults.setLayout(null);
 		addWebServiceUrl = new JButton("hinzufügen");
 		
 		tableTitle.setBounds(70, 15, 200, 50);
@@ -119,8 +127,44 @@ public class WebServicesPanel extends JPanel {
 		};
 		webServiceRanking.sort(c);
 		
-		//for test purposes
-		for(int i=0;i<webServiceRanking.size();i++){
+		webServiceResults.removeAll();
+		//a maximum of 3 best fitting webservices are displayed
+		for(int i=0;i<webServiceRanking.size() && i<3;i++){			
+			double recall = (webServiceRanking.get(i)[1])/keywords.length;
+			double precision = (webServiceRanking.get(i)[1])/keywords.length;
+			double fmeasure = 2*((precision*recall)/(precision+recall));
+			String webserviceName = wsdlTable.getValueAt((webServiceRanking.get(i)[0]), 0).toString().substring(0, wsdlTable.getValueAt((webServiceRanking.get(i)[0]), 0).toString().indexOf(".asmx"));
+			webserviceName = webserviceName.substring(webserviceName.lastIndexOf("/")+1);
+			JLabel webserviceLink = new JLabel("<html><body><a href=\""+wsdlTable.getValueAt((webServiceRanking.get(i)[0]), 0)+"\" >"+webserviceName+"</a></body></html>");
+			JLabel webserviceResult = new JLabel("<html><body>Recall:"+recall+"<br>Precision:"+precision+"<br>F-measure:"+fmeasure+"</body></html>");
+			JPanel webservicePanel = new JPanel();
+			webservicePanel.setLayout(null);
+			webserviceResult.setBackground(Color.WHITE);
+			webserviceLink.setBackground(Color.WHITE);
+			webservicePanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+			webserviceLink.setBounds(0,0,245,20);
+			webserviceResult.setBounds(0,20,245,70);
+			webservicePanel.add(webserviceLink);
+			webservicePanel.add(webserviceResult);
+			JScrollPane sp = new JScrollPane(webservicePanel);
+			webservicePanel.setBounds(10, 10+(i*100), 245, 90);			
+			sp.setBounds(10, 10+(i*100), 245, 90);
+			webserviceResult.setOpaque(true);
+			webserviceLink.setOpaque(true);
+			webserviceLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			String link = wsdlTable.getValueAt((webServiceRanking.get(i)[0]), 0).toString();
+			webserviceLink.addMouseListener(new MouseAdapter() {
+			    @Override
+			    public void mouseClicked(MouseEvent e) {
+			        try {
+			        	Desktop.getDesktop().browse(new URI(link));
+			        } catch (URISyntaxException | IOException ex) {
+			            ex.printStackTrace();
+			        }
+			    }
+			});
+			webServiceResults.add(sp);
+			webServiceResults.repaint();
 			System.out.println("Platz "+(i+1)+" mit "+webServiceRanking.get(i)[1]+" Übereinstimmungen ist der Webdienst Nr. "+(webServiceRanking.get(i)[0]+1));
 		}
 		
