@@ -51,7 +51,7 @@ public class mainFrame extends JFrame {
 		dropPanel.setBounds(280, 300, 500, 457);
 		dropPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1));
 		mainContentPanel.add(instructions);
-		instructions.setText("<html><body>Anleitung<br><br><br>1. Ziehe eine .bpmn oder .xml Datei in das untenstehende Feld. <br><br>2. Es werden dir im unteren Feld alle erkannten Aktivitäten vorgestellt. Klicke eine Aktivität an, um nach passenden Webdiensten zu suchen. <br><br>3. Im linken Fenster werden dir passende Webdienste angezeigt.</body></html>");
+		instructions.setText("<html><body>Anleitung<br><br><br>1. Ziehe eine .bpmn oder .xml Datei in das untenstehende Feld. <br><br>2. Es werden dir im unteren Feld alle erkannten AktivitÃ¤ten vorgestellt. Klicke eine AktivitÃ¤t an, um nach passenden Webdiensten zu suchen. <br><br>3. Im linken Fenster werden dir passende Webdienste angezeigt.</body></html>");
 		instructions.setBounds(290, 3, 500, 200);
 		webServicesPanel.setBounds(0, 0, 275, 800);
 		mainContentPanel.add(webServicesPanel);		
@@ -61,13 +61,14 @@ public class mainFrame extends JFrame {
 		  {   public void  filesDropped( java.io.File[] files )
 		      { 
 			  	if(!files[0].getName().endsWith(".bpmn") && !files[0].getName().endsWith(".xml")){
-			  		JOptionPane.showMessageDialog(null, "Es können nur .bpmn oder .xml Dateien verarbeitet werden !", "Ungültiges Dateiformat !", JOptionPane.INFORMATION_MESSAGE);
+			  		JOptionPane.showMessageDialog(null, "Es kÃ¶nnen nur .bpmn oder .xml Dateien verarbeitet werden !", "UngÃ¼ltiges Dateiformat !", JOptionPane.INFORMATION_MESSAGE);
 			  	}else{			 
 			  		dropPanel.removeAll();
-			  		LinkedList<String> activities = BPMNReader.getTasks(files[0].getAbsolutePath());			  		
-			  		for(int i = 0;i<activities.size();i++){	
-			  			JButton b = new JButton(activities.get(i));
-			  			final String task = activities.get(i);
+			  		String[] activities = BPMNReader.getTasks(files[0].getAbsolutePath());
+
+			  		for(int i = 0; i < activities.length ; i++){
+			  			JButton b = new JButton(activities[i]);
+			  			final String task = activities[i];
 			  			b.addActionListener(new ActionListener(){
 			  				public void actionPerformed(ActionEvent e){
 								webServicesPanel.searchForWebservice(BPMNReader.getKeyWordsFromTask(task));								
@@ -76,7 +77,6 @@ public class mainFrame extends JFrame {
 			  			dropPanel.add(b);
 			  			b.setPreferredSize(new Dimension(400,50));
 			  			b.setLocation(10, 10+(i*60));
-			  			
 			  		}
 			  	}		          
 		      }   

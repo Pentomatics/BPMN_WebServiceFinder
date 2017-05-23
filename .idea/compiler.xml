@@ -9,8 +9,8 @@
         <module name="BPMN_WebServiceFinder" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="BPMN_WebServiceFinder" target="1.5" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="BPMN_WebServiceFinder" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

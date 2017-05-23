@@ -1,6 +1,9 @@
 import java.util.LinkedList;
-import java.util.StringTokenizer;
 
+import logic.BPMNReader;
+import logic.WSDLReader;
+import logic.WebServiceFinder;
+import logic.WebServiceResult;
 import ui.mainFrame;
 
 /**
@@ -9,28 +12,26 @@ import ui.mainFrame;
 public class Main {
 
     public static void main(String [ ] args) {
-    	/*
-        String bpmnFilename = "C:\\Users\\Steffen\\Desktop\\bpmn.xml";
-        String wsdlFilename = "C:\\Users\\Steffen\\Desktop\\wsdl.xml";
+        String bpmnFilename = "src/main/resources/KundenRabattSystem.bpmn";
+        String[] wsdlFilenames = {"src/main/resources/TestService1.wsdl"};
 
-        BPMNReader bpmnReader = new BPMNReader();
-        LinkedList<String> tasks = bpmnReader.getTasks(bpmnFilename);
-
-        WSDLReader wsdlReader = new WSDLReader();
-        LinkedList<String> serviceMethods = wsdlReader.getServiceMethods(wsdlFilename);
+        String[] tasks = BPMNReader.getTasks(bpmnFilename);
+        String[] serviceMethods = WSDLReader.getServiceMethods(wsdlFilenames[0]);
 
         printTasks(tasks);
         printServiceMethods(serviceMethods);
 
-        LinkedList<String> keyWords = BPMNReader.getKeyWordsFromTasks(tasks);
-        WebServiceAnalysisResult result = WebServiceAnalyser.analyseWebService(keyWords, wsdlFilename);
-        System.out.println("\nHits: " + result.getHits());
-        */
+
+        System.out.println("\nTask results: ");
+        for (String task : tasks) {
+            LinkedList<WebServiceResult> results = WebServiceFinder.findAppropriateWebServicesForTask(task, wsdlFilenames);
+            printResultsForTask(task, results);
+        }
     	
     	new mainFrame();
     }
 
-    public static void printTasks(LinkedList<String> tasks) {
+    public static void printTasks(String[] tasks) {
         System.out.println("\nBPMN tasks: ");
 
         for (String task : tasks) {
@@ -38,11 +39,17 @@ public class Main {
         }
     }
 
-    public static void printServiceMethods(LinkedList<String> serviceMethods) {
+    public static void printServiceMethods(String[] serviceMethods) {
         System.out.println("\nWebService methods: ");
 
         for (String method : serviceMethods) {
             System.out.println(method);
+        }
+    }
+
+    public static void printResultsForTask(String task, LinkedList<WebServiceResult> results) {
+        for (WebServiceResult result : results) {
+            System.out.println("Task name: " + task + " - WebService: " + result.getName() + ", Hits: " + result.getHits());
         }
     }
 }

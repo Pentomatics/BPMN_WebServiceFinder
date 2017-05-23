@@ -74,7 +74,7 @@ public class WebServicesPanel extends JPanel {
 		webServiceResultsTitle = new JLabel("Passende Webdienste");
 		webServiceResults = new JPanel();
 		webServiceResults.setLayout(null);
-		addWebServiceUrl = new JButton("hinzufügen");
+		addWebServiceUrl = new JButton("hinzufÃ¼gen");
 		
 		tableTitle.setBounds(70, 15, 200, 50);
 		add(tableTitle);
