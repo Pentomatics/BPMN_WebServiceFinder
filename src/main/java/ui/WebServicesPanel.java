@@ -3,6 +3,7 @@ package ui;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -47,8 +48,8 @@ public class WebServicesPanel extends JPanel {
 	private JButton addWebServiceUrl;
 	
 	private Object[][] predefinedTableData = {
-			//for test purposes
-			//have to be replaced with our webservices
+			//For test purposes
+			//TODO: Have to be replaced with our webservices
 			{"http://www.webservicex.com/globalweather.asmx?WSDL",new Boolean(true)},
 			{"http://ws.cdyne.com/ip2geo/ip2geo.asmx?wsdl",new Boolean(true)}
 	};
@@ -62,7 +63,8 @@ public class WebServicesPanel extends JPanel {
 	public WebServicesPanel(){		
 		setLayout(null);
 		
-		tableTitle = new JLabel("Durchsuchte Webdienste");		
+		tableTitle = new JLabel("Durchsuchte Webdienste");
+		tableTitle.setForeground(Color.DARK_GRAY);
 		DefaultTableModel model = new DefaultTableModel(predefinedTableData, tableHeader);
         wsdlTable = new JTable(model) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -70,11 +72,14 @@ public class WebServicesPanel extends JPanel {
                 return getValueAt(0, c).getClass();
             }
         };
+        wsdlTable.setFont(new Font("FELIXTI", Font.PLAIN, 12));
+        wsdlTable.setForeground(Color.DARK_GRAY);        
 		tableScrollPane = new JScrollPane(wsdlTable);
 		webServiceResultsTitle = new JLabel("Passende Webdienste");
+		webServiceResultsTitle.setForeground(Color.DARK_GRAY);
 		webServiceResults = new JPanel();
 		webServiceResults.setLayout(null);
-		addWebServiceUrl = new JButton("hinzufügen");
+		addWebServiceUrl = new JButton("hinzufügen");		
 		
 		tableTitle.setBounds(70, 15, 200, 50);
 		add(tableTitle);
@@ -97,6 +102,8 @@ public class WebServicesPanel extends JPanel {
 			}	
 		});
 		
+		setBackground(new Color(255,253,242));
+		
 	}
 
 	public void searchForWebservice(String[] keywords){
@@ -106,6 +113,7 @@ public class WebServicesPanel extends JPanel {
 		double recall,precision,fmeasure;		
 		
 		//a maximum of 3 best fitting webservices are displayed
+		//TODO Ausgelagerte Analyse methode (die von Steffen) nutzen?
 		for(int i=0;i<webServiceRanking.size() && i<3;i++){			
 			recall = (webServiceRanking.get(i)[1])/keywords.length;
 			precision = (webServiceRanking.get(i)[1])/keywords.length;
@@ -118,7 +126,7 @@ public class WebServicesPanel extends JPanel {
 			webServiceResults.repaint();			
 		}		
 	}
-	
+		
 	/**
 	 * Creates the upper half of the visual representation for a WebService result
 	 * @param WebServiceName The name of the WebService to be displayed
@@ -129,7 +137,7 @@ public class WebServicesPanel extends JPanel {
 	private JLabel createLinkLabel(String WebServiceName, String WebServiceUrl, int rankingIndex){
 		JLabel webserviceLink = new JLabel("<html><body><a href=\""+WebServiceUrl+"\" >"+WebServiceName+"</a></body></html>");
 		webserviceLink.setBackground(Color.WHITE);
-		webserviceLink.setBounds(0,0,245,20);		
+		webserviceLink.setBounds(10,0,235,20);		
 		webserviceLink.setOpaque(true);
 		webserviceLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));			
 		webserviceLink.addMouseListener(new MouseAdapter() {
@@ -156,7 +164,7 @@ public class WebServicesPanel extends JPanel {
 	private JLabel createResultLabel(double recall, double precision, double fmeasure, int rankingIndex){
 		JLabel webserviceResult = new JLabel("<html><body>Recall:"+recall+"<br>Precision:"+precision+"<br>F-measure:"+fmeasure+"</body></html>");
 		webserviceResult.setBackground(Color.WHITE);
-		webserviceResult.setBounds(0,20,245,70);
+		webserviceResult.setBounds(15,20,230,70);
 		webserviceResult.setOpaque(true);
 		return webserviceResult;
 	}
@@ -172,10 +180,10 @@ public class WebServicesPanel extends JPanel {
 	 */
 	private void displayWebServiceResult(String WebServiceName, String WebServiceUrl, double recall, double precision, double fmeasure, int rankingIndex){
 		JPanel webservicePanel = new JPanel();
-		webservicePanel.setLayout(null);		
-		webservicePanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+		webservicePanel.setLayout(null);			
 		webservicePanel.add(createLinkLabel(WebServiceName, WebServiceUrl, rankingIndex));		
 		webservicePanel.add(createResultLabel(recall, precision, fmeasure, rankingIndex));
+		webservicePanel.setBackground(Color.WHITE);
 		
 		JScrollPane sp = new JScrollPane(webservicePanel);
 		webservicePanel.setBounds(10, 10+(rankingIndex*100), 245, 90);			
