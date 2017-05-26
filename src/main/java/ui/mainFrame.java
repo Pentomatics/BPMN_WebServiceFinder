@@ -82,7 +82,7 @@ public class mainFrame extends JFrame {
 			  			final String task = activities[i];
 			  			b.addActionListener(new ActionListener(){
 			  				public void actionPerformed(ActionEvent e){			  					
-								webServicesPanel.searchForWebservice(BPMNReader.getKeyWordsFromTask(task));								
+								webServicesPanel.searchForWebservice(task);								
 			  				}
 			  			});
 			  			dropPanel.add(b);

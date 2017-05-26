@@ -3,35 +3,31 @@ package logic;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
+import javax.xml.parsers.ParserConfigurationException;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by Steffen on 19.05.2017.
  */
-public class WSDLReader {
+public class WSDLReader {    
+    
+    /**
+	 * Retrieves the WebService description from the wsdl file at the given url.
+	 */
+	public static String getWebServiceDescription(String url) throws ParserConfigurationException, MalformedURLException, SAXException, IOException{			
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();			
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		Document doc = db.parse(new URL(url).openStream());
+		Element rootElement = doc.getDocumentElement();		
+		NodeList taskNodes = rootElement.getElementsByTagName("wsdl:documentation");		
 
-    public static String[] getServiceMethods(String filename) {
-        String[] serviceMethods = new String[0];
-        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-
-        try {
-            DocumentBuilder documentBuilder = domFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(new File(filename));
-            Element rootElement = document.getDocumentElement();
-
-            NodeList methodNodes = rootElement.getElementsByTagName("wsdl:message");
-            serviceMethods = new String[methodNodes.getLength()];
-
-            for (int i = 0; i < methodNodes.getLength(); i++) {
-                serviceMethods[i] = methodNodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return serviceMethods;
-    }
+		return taskNodes.item(0).getTextContent();		
+	}
 }

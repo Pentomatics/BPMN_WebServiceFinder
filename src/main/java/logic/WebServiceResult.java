@@ -5,25 +5,24 @@ package logic;
  */
 public class WebServiceResult {
 
-    private String name;
+    private String URL,name;
     private int hits;
-    private int recall;
-    private int precision;
-    private int fmeasure;
-
-
-    public WebServiceResult(String name, int hits) {
-        this.name = name;
+    private double recall,precision,fmeasure;
+    
+	public WebServiceResult(String URL, int hits) {
+        this.URL = URL;        
         this.hits = hits;
+        
+        name = URL.substring(0, URL.indexOf(".asmx"));
+        name = name.substring(name.lastIndexOf("/")+1);
     }
 
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public String getURL() {
+        return URL;
+    }    
+    
+    public String getName(){
+    	return name;
     }
 
     public int getHits() {
@@ -34,27 +33,27 @@ public class WebServiceResult {
         this.hits = hits;
     }
 
-    public int getRecall() {
-        return recall;
-    }
+    public double getRecall() {
+		return recall;
+	}
 
-    public void setRecall(int recall) {
-        this.recall = recall;
-    }
+	public void setRecall(double recall) {
+		this.recall = recall;
+	}
 
-    public int getPrecision() {
-        return precision;
-    }
+	public double getPrecision() {
+		return precision;
+	}
 
-    public void setPrecision(int precision) {
-        this.precision = precision;
-    }
+	public void setPrecision(double precision) {
+		this.precision = precision;
+	}
 
-    public int getFmeasure() {
-        return fmeasure;
-    }
+	public double getFmeasure() {
+		return fmeasure;
+	}
 
-    public void setFmeasure(int fmeasure) {
-        this.fmeasure = fmeasure;
-    }
+	public void setFmeasure(double fmeasure) {
+		this.fmeasure = fmeasure;
+	}
 }
