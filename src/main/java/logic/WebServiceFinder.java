@@ -1,7 +1,10 @@
 package logic;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,8 +27,7 @@ public class WebServiceFinder {
         String[] keyWords = BPMNReader.getKeyWordsFromTask(task);
         LinkedList<WebServiceResult> webServiceResults = new LinkedList<WebServiceResult>();
 
-        countKeywordHits(webServiceResults, keyWords, selectedWsdlFiles);       
-        webServiceResults.sort(getWebServiceRankingComparator());        
+        countKeywordHits(webServiceResults, keyWords, selectedWsdlFiles);                       
         rankWebSericeResults(webServiceResults, keyWords.length, selectedWsdlFiles.length);
                 
         return webServiceResults;
@@ -52,17 +54,20 @@ public class WebServiceFinder {
         
         if(displayableResults==0){
         	JOptionPane.showMessageDialog(null, "Es wurden keine passenden Webdienste gefunden!", "Hinweis", JOptionPane.INFORMATION_MESSAGE);
+        }  
+        
+        for(WebServiceResult webServiceResult : webServiceResults){
+        	webServiceResult.setRecall((double)validResults/(double)amountOfSearchedWebServices);
+        	webServiceResult.setPrecision((double)webServiceResult.getHits()/(double)amountOfKeywords);
+        	webServiceResult.setFmeasure(2.0d*((webServiceResult.getPrecision()*webServiceResult.getRecall())/(webServiceResult.getPrecision()+webServiceResult.getRecall())));
         }
+        
+        webServiceResults.sort(getWebServiceRankingComparator());        
         
         while(webServiceResults.size()> displayableResults){
         	webServiceResults.removeLast();
-        }
+        }        
         
-        for(WebServiceResult webServiceResult : webServiceResults){
-        	webServiceResult.setRecall(validResults/amountOfSearchedWebServices);
-        	webServiceResult.setPrecision(webServiceResult.getHits()/amountOfKeywords);
-        	webServiceResult.setFmeasure(2*((webServiceResult.getPrecision()*webServiceResult.getRecall())/(webServiceResult.getPrecision()+webServiceResult.getRecall())));
-        }
     }
     
     /**
@@ -78,7 +83,7 @@ public class WebServiceFinder {
 	            int hits = 0;	            
 	            String description = WSDLReader.getWebServiceDescription(wsdlFile);					
 				for(String keyword:keyWords){
-					if(description.contains(keyword))
+					if(containsWholeWord(description, keyword))
 						hits++;
 				}	
 	            webServiceResults.add(new WebServiceResult(wsdlFile, hits));
@@ -89,15 +94,39 @@ public class WebServiceFinder {
         } 
     }
     
+    /**
+     * Checks if a given word occurs in a given string. 
+     * Other than string.contains() this will only return true if the entire
+     * word as it is is contained. 
+     * If sentence is "Hello" and word is "ello", this method return false while
+     * String.contains() would return true
+     * @param sentence The string to be searched
+     * @param word The word to be searched
+     * @return true, if there is any occurrence of this word in the string and false if not
+     */
+    private static boolean containsWholeWord(String sentence, String word){
+        String pattern = "\\b"+word+"\\b";
+        Pattern p=Pattern.compile(pattern);
+        Matcher m=p.matcher(sentence);
+        return m.find();
+   }
+    
     /**	 
 	 * @return A Comparator to sort the WebService-Ranking Vector. 
-	 * Technically, the amount of matching keywords (hits) are compared.
+	 * Technically, the f-measure of WebServiceResults are compared.
+	 * NOTE THAT this sorts in reverse order to create a ranking with
+	 * the WebServiceResult holding the biggest f-measure in first place
 	 */
 	private static Comparator<WebServiceResult> getWebServiceRankingComparator(){
 		return new Comparator<WebServiceResult>(){
 			@Override
-			public int compare(WebServiceResult first, WebServiceResult second) {				
-				return first.getHits()-second.getHits();
+			public int compare(WebServiceResult first, WebServiceResult second) {	
+				if(first.getFmeasure()<second.getFmeasure())
+					return 1;
+				else if(first.getFmeasure()>second.getFmeasure())
+					return -1;
+				else 
+					return 0;				
 			}			
 		};
 	}        

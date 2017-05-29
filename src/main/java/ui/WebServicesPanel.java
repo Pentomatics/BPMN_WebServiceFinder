@@ -104,14 +104,15 @@ public class WebServicesPanel extends JPanel {
 		}
 		String[] webServices = new String[activeWebServices.size()]; 
 		LinkedList<WebServiceResult> webServicesResults = WebServiceFinder.findAppropriateWebServicesForTask(task, activeWebServices.toArray(webServices));		
-		webServiceResults.removeAll();		
+		webServiceResults.removeAll();	
+		webServiceResults.repaint();
 		
 		for (int i = 0; i < webServicesResults.size(); i++) {
 			WebServiceResult webServiceResult = webServicesResults.get(i);
-			displayWebServiceResult(webServiceResult.getName(), webServiceResult.getName(), webServiceResult.getRecall(),
-					webServiceResult.getPrecision(), webServiceResult.getFmeasure(), i);			
-			webServiceResults.repaint();	
+			displayWebServiceResult(webServiceResult.getName(), webServiceResult.getURL(), webServiceResult.getRecall(),
+					webServiceResult.getPrecision(), webServiceResult.getFmeasure(), i);					
 		}	
+		webServiceResults.repaint();
 	}
 		
 	/**
