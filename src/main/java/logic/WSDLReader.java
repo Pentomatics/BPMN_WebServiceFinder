@@ -19,15 +19,27 @@ import java.net.URL;
 public class WSDLReader {    
     
     /**
-	 * Retrieves the WebService description from the wsdl file at the given url.
-	 */
-	public static String getWebServiceDescription(String url) throws ParserConfigurationException, MalformedURLException, SAXException, IOException{			
+     * Iterates over all operations in a wsdl file to get a list of their names.
+     * Those names / descriptions can be used to decide which WebService fits best to a give task.
+     * @param url The URL to the webservice to be searched
+     * @return An array containing the names of all operations from this WebService
+     * @throws ParserConfigurationException
+     * @throws MalformedURLException
+     * @throws SAXException
+     * @throws IOException
+     */
+	public static String[] getWebServiceOperations(String url) throws ParserConfigurationException, MalformedURLException, SAXException, IOException{			
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();			
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.parse(new URL(url).openStream());
 		Element rootElement = doc.getDocumentElement();		
-		NodeList taskNodes = rootElement.getElementsByTagName("wsdl:documentation");		
+		NodeList taskNodes = rootElement.getElementsByTagName("wsdl:operation");	
+		String[] descriptions = new String[taskNodes.getLength()]; 
+		for(int i = 0; i < taskNodes.getLength(); i++){
+			Element e = (Element)taskNodes.item(i);
+            descriptions[i] = e.getAttribute("name");            
+		}
 
-		return taskNodes.item(0).getTextContent();		
+		return descriptions;		
 	}
 }

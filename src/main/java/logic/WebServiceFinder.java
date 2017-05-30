@@ -1,6 +1,5 @@
 package logic;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -71,22 +70,37 @@ public class WebServiceFinder {
     }
     
     /**
-     * Iterates through all given wsdl files and counts their keywords hits.
-     * For each wsdl file, a WebServiceresult is added into the given WebServiceResult list.
+     * Iterates through all operations of all given wsdl files and counts their keywords hits.
+     * For each wsdl file, a WebServiceResult is added into the given WebServiceResult list.
+     * Therefore the operations with the most hits is used to represent this WebService.
      * @param webServiceResults The list of WebServiceResults where the results are added to.
      * @param keyWords The keyWords used to compare the WebService description.
      * @param selectedWsdlFiles The list of URLs to the wsdl files.
      */
     private static void countKeywordHits(LinkedList<WebServiceResult> webServiceResults, String[] keyWords, String[] selectedWsdlFiles){    	
         for (String wsdlFile : selectedWsdlFiles) {
-        	try{
-	            int hits = 0;	            
-	            String description = WSDLReader.getWebServiceDescription(wsdlFile);					
-				for(String keyword:keyWords){
-					if(containsWholeWord(description, keyword))
-						hits++;
-				}	
-	            webServiceResults.add(new WebServiceResult(wsdlFile, hits));
+        	try{           
+	            
+	            String[] descriptions = WSDLReader.getWebServiceOperations(wsdlFile);	
+	            WebServiceResult[] services = new WebServiceResult[descriptions.length];
+	            
+	            //count keyword occurrences for all operations of this WebService
+	            for(int i = 0; i < descriptions.length; i++){
+	            	int hits = 0;
+	            	for(String keyword:keyWords){
+	            		if(containsWholeWord(descriptions[i], keyword))
+	            			hits++;
+	            	}
+	            	services[i] = new WebServiceResult(wsdlFile, hits);
+	            }
+				
+	            //use the operation with the most hits for this WebService
+	            int index = 0;
+	            for(int x = 0; x < services.length; x++){
+	            	if(services[x].getHits()>services[index].getHits())
+	            		index=x;
+	            }
+	            webServiceResults.add(services[index]);
 	            
         	}catch (ParserConfigurationException | SAXException | IOException e) {
 				JOptionPane.showMessageDialog(null, "Unter \""+wsdlFile+"\" findet sich keine WSDL-Datei. Der Eintrag wird ignoriert!", "Fehlerhafter Webdienst", JOptionPane.INFORMATION_MESSAGE);
