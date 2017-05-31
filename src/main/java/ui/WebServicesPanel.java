@@ -40,7 +40,10 @@ public class WebServicesPanel extends JPanel {
 			//For test purposes
 			//TODO: Have to be replaced with our webservices
 			{"http://www.webservicex.com/globalweather.asmx?WSDL",new Boolean(true)},
-			{"http://ws.cdyne.com/ip2geo/ip2geo.asmx?wsdl",new Boolean(true)}
+			{"http://ws.cdyne.com/ip2geo/ip2geo.asmx?wsdl",new Boolean(true)},
+			{"http://localhost:8080/CustomerProvider_war_exploded/CustomerSalesService?wsdl", new Boolean(true)},
+			{"http://localhost:8080/CustomerProvider_war_exploded/PeerGroupSalesService?wsdl", new Boolean(true)},
+			{"http://localhost:8080/CustomerProvider_war_exploded/CustomerService?wsdl", new Boolean(true)}
 	};
 	
 	private Object[] tableHeader = {
