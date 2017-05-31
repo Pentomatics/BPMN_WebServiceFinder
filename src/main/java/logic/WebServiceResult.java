@@ -13,7 +13,10 @@ public class WebServiceResult {
         this.URL = URL;        
         this.hits = hits;
         
-        name = URL.substring(0, URL.indexOf(".asmx"));
+        if(URL.contains("?wsdl"))
+        	name = URL.substring(0, URL.indexOf("?wsdl"));
+        else
+        	name = URL.substring(0, URL.indexOf("?WSDL"));
         name = name.substring(name.lastIndexOf("/")+1);
     }
 
