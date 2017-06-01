@@ -88,8 +88,9 @@ public class WebServiceFinder {
 	            for(int i = 0; i < descriptions.length; i++){
 	            	int hits = 0;
 	            	for(String keyword:keyWords){
-	            		if(containsWholeWord(descriptions[i], keyword))
-	            			hits++;
+	            		if(containsWholeWord(descriptions[i], keyword)) {
+							hits++;
+						}
 	            	}
 	            	services[i] = new WebServiceResult(wsdlFile, hits);
 	            }
@@ -119,10 +120,9 @@ public class WebServiceFinder {
      * @return true, if there is any occurrence of this word in the string and false if not
      */
     private static boolean containsWholeWord(String sentence, String word){
-    	word = word.toUpperCase();
-    	sentence = sentence.toUpperCase();
+    	String firstLetter = word.substring(0,1).toUpperCase();
     	
-        String pattern = "\\b"+word+"\\b";
+        String pattern = "(\\b"+word+"\\b |" +  firstLetter+ word.substring(1) +")";
         Pattern p=Pattern.compile(pattern);
         Matcher m=p.matcher(sentence);
         return m.find();
