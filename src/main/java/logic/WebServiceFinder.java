@@ -119,7 +119,10 @@ public class WebServiceFinder {
      * @return true, if there is any occurrence of this word in the string and false if not
      */
     private static boolean containsWholeWord(String sentence, String word){
-        String pattern = word;
+    	word = word.toUpperCase();
+    	sentence = sentence.toUpperCase();
+    	
+        String pattern = "\\b"+word+"\\b";
         Pattern p=Pattern.compile(pattern);
         Matcher m=p.matcher(sentence);
         return m.find();
